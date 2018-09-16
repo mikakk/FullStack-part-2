@@ -12,6 +12,12 @@ class App extends React.Component {
 
     addPerson = event => {
         event.preventDefault();
+        const contains = this.state.persons.filter(
+            person => person.name === this.state.newName
+        );
+        if (contains.length) {
+            return
+        }
         const personObject = {
             name: this.state.newName,
             id: this.state.persons.length + 1
@@ -26,7 +32,6 @@ class App extends React.Component {
     };
 
     handlePersonChange = event => {
-        /*console.log(event.target.value);*/
         this.setState({ newName: event.target.value });
     };
 
