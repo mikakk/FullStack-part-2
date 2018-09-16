@@ -1,21 +1,5 @@
 import React from "react";
-import Person from "./components/Person";
-
-const Print = ({ persons, filterValue }) => {
-    let filtered = persons;
-    if (filterValue.length) {
-        filtered = persons.filter(person =>
-            person.name.toLowerCase().includes(filterValue.toLowerCase())
-        );
-    }
-    return (
-        <div>
-            {filtered.map(person => (
-                <Person key={person.name} person={person} />
-            ))}
-        </div>
-    );
-};
+import Print from "./components/Print";
 
 class App extends React.Component {
     constructor(props) {
