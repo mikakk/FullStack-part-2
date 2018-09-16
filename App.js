@@ -5,8 +5,9 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            persons: [{ name: "Arto Hellas" }],
-            newName: ""
+            persons: [{ name: "Arto Hellas", phone: "55555" }],
+            newName: "",
+            newPhone: ""
         };
     }
 
@@ -16,10 +17,11 @@ class App extends React.Component {
             person => person.name === this.state.newName
         );
         if (contains.length) {
-            return
+            return;
         }
         const personObject = {
             name: this.state.newName,
+            phone: this.state.newPhone,
             id: this.state.persons.length + 1
         };
 
@@ -27,12 +29,17 @@ class App extends React.Component {
 
         this.setState({
             persons,
-            newName: ""
+            newName: "",
+            newPhone: ""
         });
     };
 
     handlePersonChange = event => {
         this.setState({ newName: event.target.value });
+    };
+
+    handlePhoneChange = event => {
+        this.setState({ newPhone: event.target.value });
     };
 
     render() {
@@ -45,6 +52,13 @@ class App extends React.Component {
                         <input
                             value={this.state.newName}
                             onChange={this.handlePersonChange}
+                        />
+                    </div>
+                    <div>
+                        numero:{" "}
+                        <input
+                            value={this.state.newPhone}
+                            onChange={this.handlePhoneChange}
                         />
                     </div>
                     <div>
