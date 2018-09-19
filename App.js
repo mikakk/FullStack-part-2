@@ -1,20 +1,25 @@
 import React from "react";
 import Print from "./components/Print";
+import axios from "axios";
 
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            persons: [
-                { name: "Arto Hellas", phone: "55555" },
-                { name: "User Name", phone: "123" },
-                { name: "Test Name", phone: "456" },
-                { name: "another one", phone: "789" }
-            ],
+            persons: [],
             newName: "",
             newPhone: "",
             filter: ""
         };
+    }
+
+    componentDidMount() {
+        console.log("did mount");
+        axios.get("http://localhost:3001/persons").then(response => {
+            console.log("promise fulfilled");
+            console.log(response.data);
+            this.setState({ persons: response.data });
+        });
     }
 
     addPerson = event => {
