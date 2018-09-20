@@ -1,6 +1,6 @@
 import React from "react";
 import Print from "./components/Print";
-import axios from "axios";
+import personService from "./services/persons";
 
 class App extends React.Component {
     constructor(props) {
@@ -13,12 +13,9 @@ class App extends React.Component {
         };
     }
 
-    componentDidMount() {
-        console.log("did mount");
-        axios.get("http://localhost:3001/persons").then(response => {
-            console.log("promise fulfilled");
-            console.log(response.data);
-            this.setState({ persons: response.data });
+    componentWillMount() {
+        personService.getAll().then(persons => {
+            this.setState({ persons });
         });
     }
 
@@ -36,12 +33,12 @@ class App extends React.Component {
             id: this.state.persons.length + 1
         };
 
-        const persons = this.state.persons.concat(personObject);
-
-        this.setState({
-            persons,
-            newName: "",
-            newPhone: ""
+        personService.create(personObject).then(newPerson => {
+            this.setState({
+                persons: this.state.persons.concat(newPerson),
+                newPerson: "",
+                newPhone: ""
+            });
         });
     };
 
