@@ -9,11 +9,13 @@ const Print = ({ persons, filterValue }) => {
         );
     }
     return (
-        <div>
-            {filtered.map(person => (
-                <Person key={person.name} person={person} />
-            ))}
-        </div>
+            <table>
+                <tbody>
+                    {filtered.map(person => (
+                        <Person key={person.name} person={person} />
+                    ))}
+                </tbody>
+            </table>
     );
 };
 

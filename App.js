@@ -1,6 +1,7 @@
 import React from "react";
-import Print from "./components/Print";
+/*import Print from "./components/Print";*/
 import personService from "./services/persons";
+import Person from "./components/Person";
 
 class App extends React.Component {
     constructor(props) {
@@ -30,16 +31,53 @@ class App extends React.Component {
         const personObject = {
             name: this.state.newName,
             phone: this.state.newPhone,
-            id: this.state.persons.length + 1
+            id: this.state.newName
         };
 
-        personService.create(personObject).then(newPerson => {
-            this.setState({
-                persons: this.state.persons.concat(newPerson),
-                newPerson: "",
-                newPhone: ""
+        personService
+            .create(personObject)
+            .then(newPerson => {
+                this.setState({
+                    persons: this.state.persons.concat(newPerson),
+                    newName: "",
+                    newPhone: ""
+                });
+            })
+            .catch(error => {
+                alert(
+                    `henkilön '${personObject.name} ${
+                        personObject.phone
+                    }' lisäys epäonnistui`
+                );
             });
-        });
+    };
+
+    deleteOne = id => {
+        return () => {
+            const person = this.state.persons.find(n => n.id === id);
+            if (
+                !window.confirm(`Poistetaanko ${person.name}, ${person.phone}?`)
+            ) {
+                return;
+            }
+            personService
+                .deleteOne(id)
+                .then(idd => {
+                    this.setState({
+                        persons: this.state.persons.filter(n => n.id !== id)
+                    });
+                })
+                .catch(error => {
+                    alert(
+                        `henkilö '${
+                            person.name
+                        }' on jo valitettavasti poistettu palvelimelta`
+                    );
+                    this.setState({
+                        persons: this.state.persons.filter(n => n.id !== id)
+                    });
+                });
+        };
     };
 
     handlePersonChange = event => {
@@ -55,6 +93,14 @@ class App extends React.Component {
     };
 
     render() {
+        let filtered = this.state.persons;
+        if (this.state.filter.length) {
+            filtered = this.state.persons.filter(person =>
+                person.name
+                    .toLowerCase()
+                    .includes(this.state.filter.toLowerCase())
+            );
+        }
         return (
             <div>
                 <h1>Puhelinluettelo</h1>
@@ -86,10 +132,26 @@ class App extends React.Component {
                     </div>
                 </form>
                 <h2>Numerot</h2>
-                <Print
-                    persons={this.state.persons}
-                    filterValue={this.state.filter}
-                />
+
+                <table>
+                    <tbody>
+                        {filtered.map(person => (
+                            <Person
+                                key={person.name}
+                                person={person}
+                                deleteOne={this.deleteOne(person.id)}
+                            />
+                        ))}
+                    </tbody>
+                </table>
+
+                {/*
+                    <Print
+                        persons={this.state.persons}
+                        filterValue={this.state.filter}
+                        deleteOne={this.deleteOne(person.id)}
+                    />
+                */}
             </div>
         );
     }
