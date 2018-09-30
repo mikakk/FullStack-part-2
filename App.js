@@ -1,5 +1,4 @@
 import React from "react";
-/*import Print from "./components/Print";*/
 import personService from "./services/persons";
 import Person from "./components/Person";
 
@@ -20,12 +19,47 @@ class App extends React.Component {
         });
     }
 
+    updatePerson = (name, phone) => {
+        if (
+            !window.confirm(
+                `${name} on jo luettelossa, korvataanko vanha numero uudella?`
+            )
+        ) {
+            return;
+        }
+        const personObject = {
+            name: name,
+            phone: phone,
+            id: name
+        };
+        personService
+            .update(personObject.id, personObject)
+            .then(updatedPerson => {
+                const persons = this.state.persons.filter(
+                    n => n.id !== personObject.id
+                );
+                this.setState({
+                    persons: persons.concat(updatedPerson),
+                    newName: "",
+                    newPhone: ""
+                });
+            })
+            .catch(error => {
+                alert(
+                    `henkilön '${personObject.name} ${
+                        personObject.phone
+                    }' korvaus epäonnistui`
+                );
+            });
+    };
+
     addPerson = event => {
         event.preventDefault();
         const contains = this.state.persons.filter(
             person => person.name === this.state.newName
         );
         if (contains.length) {
+            this.updatePerson(contains[0].name, this.state.newPhone);
             return;
         }
         const personObject = {
@@ -52,7 +86,7 @@ class App extends React.Component {
             });
     };
 
-    deleteOne = id => {
+    deletePerson = id => {
         return () => {
             const person = this.state.persons.find(n => n.id === id);
             if (
@@ -139,19 +173,11 @@ class App extends React.Component {
                             <Person
                                 key={person.name}
                                 person={person}
-                                deleteOne={this.deleteOne(person.id)}
+                                deletePerson={this.deletePerson(person.id)}
                             />
                         ))}
                     </tbody>
                 </table>
-
-                {/*
-                    <Print
-                        persons={this.state.persons}
-                        filterValue={this.state.filter}
-                        deleteOne={this.deleteOne(person.id)}
-                    />
-                */}
             </div>
         );
     }
