@@ -1,6 +1,7 @@
 import React from "react";
 import personService from "./services/persons";
 import Person from "./components/Person";
+import Message from "./components/Message";
 
 class App extends React.Component {
     constructor(props) {
@@ -9,7 +10,9 @@ class App extends React.Component {
             persons: [],
             newName: "",
             newPhone: "",
-            filter: ""
+            filter: "",
+            messageType: "",
+            message: null
         };
     }
 
@@ -41,15 +44,26 @@ class App extends React.Component {
                 this.setState({
                     persons: persons.concat(updatedPerson),
                     newName: "",
-                    newPhone: ""
+                    newPhone: "",
+                    messageType: "success",
+                    message: `henkilön '${personObject.name} ${
+                        personObject.phone
+                    }' korvaus onnistui`
                 });
+                setTimeout(() => {
+                    this.setState({ message: null });
+                }, 5000);
             })
             .catch(error => {
-                alert(
-                    `henkilön '${personObject.name} ${
+                this.setState({
+                    messageType: "error",
+                    message: `henkilön '${personObject.name} ${
                         personObject.phone
                     }' korvaus epäonnistui`
-                );
+                });
+                setTimeout(() => {
+                    this.setState({ message: null });
+                }, 5000);
             });
     };
 
@@ -74,15 +88,26 @@ class App extends React.Component {
                 this.setState({
                     persons: this.state.persons.concat(newPerson),
                     newName: "",
-                    newPhone: ""
+                    newPhone: "",
+                    messageType: "success",
+                    message: `henkilön '${personObject.name} ${
+                        personObject.phone
+                    }' lisäys onnistui`
                 });
+                setTimeout(() => {
+                    this.setState({ message: null });
+                }, 5000);
             })
             .catch(error => {
-                alert(
-                    `henkilön '${personObject.name} ${
+                this.setState({
+                    messageType: "error",
+                    message: `henkilön '${personObject.name} ${
                         personObject.phone
                     }' lisäys epäonnistui`
-                );
+                });
+                setTimeout(() => {
+                    this.setState({ message: null });
+                }, 5000);
             });
     };
 
@@ -98,18 +123,27 @@ class App extends React.Component {
                 .deleteOne(id)
                 .then(idd => {
                     this.setState({
-                        persons: this.state.persons.filter(n => n.id !== id)
+                        persons: this.state.persons.filter(n => n.id !== id),
+                        messageType: "success",
+                        message: `henkilön '${person.name} ${
+                            person.phone
+                        }' poisto onnistui`
                     });
+                    setTimeout(() => {
+                        this.setState({ message: null });
+                    }, 5000);
                 })
                 .catch(error => {
-                    alert(
-                        `henkilö '${
+                    this.setState({
+                        persons: this.state.persons.filter(n => n.id !== id),
+                        messageType: "error",
+                        message: `henkilö '${
                             person.name
                         }' on jo valitettavasti poistettu palvelimelta`
-                    );
-                    this.setState({
-                        persons: this.state.persons.filter(n => n.id !== id)
                     });
+                    setTimeout(() => {
+                        this.setState({ message: null });
+                    }, 5000);
                 });
         };
     };
@@ -138,6 +172,10 @@ class App extends React.Component {
         return (
             <div>
                 <h1>Puhelinluettelo</h1>
+                <Message
+                    type={this.state.messageType}
+                    message={this.state.message}
+                />
                 <div>
                     Rajaa näytettäviä:{" "}
                     <input
