@@ -55,20 +55,21 @@ class App extends React.Component {
                 }, 5000);
             })
             .catch(error => {
+                /* delete not found person from state */
                 this.setState({
-                    messageType: "error",
-                    message: `henkilön '${personObject.name} ${
-                        personObject.phone
-                    }' korvaus epäonnistui`
+                    persons: this.state.persons.filter(
+                        n => n.id !== personObject.id
+                    )
                 });
-                setTimeout(() => {
-                    this.setState({ message: null });
-                }, 5000);
+                /* add person as new */
+                this.addPerson(null);
             });
     };
 
     addPerson = event => {
-        event.preventDefault();
+        if (event != null) {
+            event.preventDefault();
+        }
         const contains = this.state.persons.filter(
             person => person.name === this.state.newName
         );
