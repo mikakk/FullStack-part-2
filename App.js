@@ -22,7 +22,7 @@ class App extends React.Component {
         });
     }
 
-    updatePerson = (name, phone) => {
+    updatePerson = (id, name, phone) => {
         if (
             !window.confirm(
                 `${name} on jo luettelossa, korvataanko vanha numero uudella?`
@@ -33,7 +33,7 @@ class App extends React.Component {
         const personObject = {
             name: name,
             phone: phone,
-            id: name
+            id: id
         };
         personService
             .update(personObject.id, personObject)
@@ -74,13 +74,16 @@ class App extends React.Component {
             person => person.name === this.state.newName
         );
         if (contains.length) {
-            this.updatePerson(contains[0].name, this.state.newPhone);
+            this.updatePerson(
+                contains[0].id,
+                contains[0].name,
+                this.state.newPhone
+            );
             return;
         }
         const personObject = {
             name: this.state.newName,
-            phone: this.state.newPhone,
-            id: this.state.newName
+            phone: this.state.newPhone
         };
 
         personService
